@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block title %}New Knowledge Article – IT Helpdesk{% endblock %}
+{% block content %}
+
+<div class="max-w-2xl mx-auto">
+  <div class="mb-6">
+    <h1 class="text-2xl font-bold text-gray-800">Save Knowledge Article</h1>
+    {% if ticket %}
+    <p class="text-sm text-gray-500 mt-1">Based on Ticket #{{ ticket.id }}: {{ ticket.title }}</p>
+    {% else %}
+    <p class="text-sm text-gray-500 mt-1">Document a solution for future reference.</p>
+    {% endif %}
+  </div>
+
+  <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-8">
+    <form method="post" class="space-y-5">
+      {% csrf_token %}
+      {% if ticket %}<input type="hidden" name="source_ticket" value="{{ ticket.pk }}">{% endif %}
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Article Title <span class="text-red-500">*</span></label>
+        <input name="title" type="text" required
+          value="{{ ticket.title|default:'' }}"
+          placeholder="e.g. How to fix VPN connection on Windows"
+          class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400">
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Category</label>
+        <select name="category" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400">
+          {% for val, label in category_choices %}
+          <option value="{{ val }}" {% if ticket and ticket.category == val %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Solution / Content <span class="text-red-500">*</span></label>
+        <textarea name="content" rows="8" required
+          placeholder="Step-by-step solution, workaround, or explanation..."
+          class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 resize-none">{% if ticket %}Problem: {{ ticket.description }}
+
+Solution:
+{% endif %}</textarea>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Tags</label>
+        <input name="tags" type="text"
+          placeholder="vpn, windows, remote-access  (comma-separated)"
+          class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400">
+      </div>
+
+      <div class="flex gap-3 pt-2">
+        <button type="submit" class="bg-green-600 hover:bg-green-700 text-white text-sm font-semibold px-6 py-2.5 rounded-lg transition">
+          📚 Save Article
+        </button>
+        <a href="{% url 'article_list' %}" class="text-sm text-gray-500 hover:text-gray-700 px-4 py-2.5">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

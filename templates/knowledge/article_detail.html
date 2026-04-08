@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block title %}{{ article.title }} – Knowledge Base{% endblock %}
+{% block content %}
+
+<div class="max-w-3xl mx-auto">
+  <div class="mb-4">
+    <a href="{% url 'article_list' %}" class="text-sm text-gray-400 hover:text-blue-600">← Knowledge Base</a>
+  </div>
+
+  <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-8">
+    <div class="flex items-start justify-between gap-4 mb-6">
+      <div>
+        <h1 class="text-2xl font-bold text-gray-800">{{ article.title }}</h1>
+        <p class="text-sm text-gray-400 mt-1">
+          {{ article.get_category_display }} ·
+          {{ article.created_at|date:"M d, Y" }} ·
+          By {{ article.created_by.get_full_name|default:article.created_by.username|default:"System" }}
+        </p>
+      </div>
+      <span class="text-xs bg-blue-50 text-blue-600 px-3 py-1 rounded-full font-medium flex-shrink-0 capitalize">{{ article.get_category_display }}</span>
+    </div>
+
+    <div class="prose prose-sm max-w-none text-gray-700 whitespace-pre-wrap leading-relaxed">{{ article.content }}</div>
+
+    {% if article.tag_list %}
+    <div class="mt-6 pt-4 border-t border-gray-100 flex flex-wrap gap-2">
+      {% for tag in article.tag_list %}
+      <span class="text-xs bg-gray-100 text-gray-500 px-3 py-1 rounded-full">{{ tag }}</span>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if article.source_ticket %}
+    <div class="mt-4 pt-4 border-t border-gray-100">
+      <p class="text-xs text-gray-400">
+        Source: <a href="{% url 'ticket_detail' article.source_ticket.pk %}" class="text-blue-500 hover:underline">Ticket #{{ article.source_ticket.id }} – {{ article.source_ticket.title }}</a>
+      </p>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

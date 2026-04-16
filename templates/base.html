@@ -51,7 +51,10 @@ tailwind.config = {
 <body>
 
 {% if user.is_authenticated %}
-<div class="flex h-screen overflow-hidden">
+    {% block content %}{% endblock %}
+{% else %}
+    {% block auth_content %}{% endblock %}
+{% endif %}
 
   <!-- Sidebar -->
   <aside id="sidebar" class="w-56 flex-shrink-0 flex flex-col bg-[#2f3941] overflow-y-auto transition-transform duration-200 z-40
